@@ -31,7 +31,6 @@ dependencies = [
     "wheel",
     "torch>=1.11.0",
     "torchvision>=0.16.2",
-    "torchaudio==0.11.0",
     "transformers",
     "tokenizers",
     "numpy",
