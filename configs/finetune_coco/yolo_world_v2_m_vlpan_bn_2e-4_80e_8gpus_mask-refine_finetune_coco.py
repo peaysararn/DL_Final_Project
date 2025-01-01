@@ -6,18 +6,19 @@ custom_imports = dict(
     allow_failed_imports=False)
 
 # hyper-parameters
-num_classes = 80
-num_training_classes = 80
-max_epochs = 80  # Maximum training epochs
+num_classes = 5
+num_training_classes = 5
+max_epochs = 100  # Maximum training epochs
+your_classes = ('blackhead', 'nodule', 'papule', 'pustule', 'whitehead')
 close_mosaic_epochs = 10
-save_epoch_intervals = 5
+save_epoch_intervals = 50
 text_channels = 512
 neck_embed_channels = [128, 256, _base_.last_stage_out_channels // 2]
 neck_num_heads = [4, 8, _base_.last_stage_out_channels // 2 // 32]
 base_lr = 2e-4
 weight_decay = 0.05
 train_batch_size_per_gpu = 16
-load_from = 'pretrained_models/yolo_world_m_clip_t2i_bn_2e-3adamw_32xb16-100e_obj365v1_goldg_train-c6237d5b.pth'
+load_from = '/kaggle/input/m-weight/yolo_world_v2_m_vlpan_bn_2e-4_80e_8gpus_mask-refine_finetune_coco_ep80-69c27ac7.pth'
 # text_model_name = '../pretrained_models/clip-vit-base-patch32-projection'
 text_model_name = 'openai/clip-vit-base-patch32'
 persistent_workers = False
@@ -100,11 +101,12 @@ coco_train_dataset = dict(
     type='MultiModalDataset',
     dataset=dict(
         type='YOLOv5CocoDataset',
-        data_root='data/coco',
-        ann_file='annotations/instances_train2017.json',
-        data_prefix=dict(img='train2017/'),
+		metainfo=dict(classes=your_classes),
+        data_root='/kaggle/input/dl-final/acne detection coco/train',
+        ann_file='_annotations.coco.json',
+        data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=False, min_size=32)),
-    class_text_path='data/texts/coco_class_texts.json',
+    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new.json',
     pipeline=train_pipeline)
 
 train_dataloader = dict(
@@ -125,11 +127,12 @@ coco_val_dataset = dict(
     type='MultiModalDataset',
     dataset=dict(
         type='YOLOv5CocoDataset',
-        data_root='data/coco',
-        ann_file='annotations/instances_val2017.json',
-        data_prefix=dict(img='val2017/'),
+		metainfo=dict(classes=your_classes),
+        data_root='/kaggle/input/dl-final/acne detection coco/valid',
+        ann_file='_annotations.coco.json',
+        data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=False, min_size=32)),
-    class_text_path='data/texts/coco_class_texts.json',
+    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new.json',
     pipeline=test_pipeline)
 val_dataloader = dict(dataset=coco_val_dataset)
 test_dataloader = val_dataloader
@@ -178,5 +181,5 @@ val_evaluator = dict(
     _delete_=True,
     type='mmdet.CocoMetric',
     proposal_nums=(100, 1, 10),
-    ann_file='data/coco/annotations/instances_val2017.json',
+    ann_file='/kaggle/input/dl-final/acne detection coco/valid/_annotations.coco.json',
     metric='bbox')
