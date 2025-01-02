@@ -6,12 +6,12 @@ custom_imports = dict(
     allow_failed_imports=False)
 
 # hyper-parameters
-num_classes = 6
-num_training_classes = 6
-max_epochs = 100  # Maximum training epochs
-your_classes = ('blackheads', 'dark spot', 'nodules', 'papules', 'pustules', 'whiteheads')
+num_classes = 5
+num_training_classes = 5
+max_epochs = 80  # Maximum training epochs
+your_classes = ('blackhead', 'nodule', 'papule', 'pustule', 'whitehead')
 close_mosaic_epochs = 10
-save_epoch_intervals = 50
+save_epoch_intervals = 20
 text_channels = 512
 neck_embed_channels = [128, 256, _base_.last_stage_out_channels // 2]
 neck_num_heads = [4, 8, _base_.last_stage_out_channels // 2 // 32]
@@ -102,11 +102,11 @@ coco_train_dataset = dict(
     dataset=dict(
         type='YOLOv5CocoDataset',
 	metainfo=dict(classes=your_classes),
-        data_root='/kaggle/input/dl-final2/train',
+        data_root='/kaggle/input/dl-final/acne detection coco/train',
         ann_file='_annotations.coco.json',
         data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=False, min_size=32)),
-    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new2.json',
+    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new.json',
     pipeline=train_pipeline)
 
 train_dataloader = dict(
@@ -128,14 +128,26 @@ coco_val_dataset = dict(
     dataset=dict(
         type='YOLOv5CocoDataset',
 	metainfo=dict(classes=your_classes),
-        data_root='/kaggle/input/dl-final2/valid',
+        data_root='/kaggle/input/dl-final/acne detection coco/valid',
         ann_file='_annotations.coco.json',
         data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=False, min_size=32)),
-    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new2.json',
+    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new.json',
     pipeline=test_pipeline)
 val_dataloader = dict(dataset=coco_val_dataset)
-test_dataloader = val_dataloader
+coco_test_dataset = dict(
+    _delete_=True,
+    type='MultiModalDataset',
+    dataset=dict(
+        type='YOLOv5CocoDataset',
+	metainfo=dict(classes=your_classes),
+        data_root='/kaggle/input/dl-final/acne detection coco/test',
+        ann_file='_annotations.coco.json',
+        data_prefix=dict(img=''),
+        filter_cfg=dict(filter_empty_gt=False, min_size=32)),
+    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new.json',
+    pipeline=test_pipeline)
+test_dataloader = dict(dataset=coco_test_dataset)
 # training settings
 default_hooks = dict(
     param_scheduler=dict(
@@ -181,5 +193,5 @@ val_evaluator = dict(
     _delete_=True,
     type='mmdet.CocoMetric',
     proposal_nums=(100, 1, 10),
-    ann_file='/kaggle/input/dl-final2/valid/_annotations.coco.json',
+    ann_file='/kaggle/input/dl-final/acne detection coco/valid/_annotations.coco.json',
     metric='bbox')
