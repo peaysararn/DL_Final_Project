@@ -101,7 +101,7 @@ coco_train_dataset = dict(
     type='MultiModalDataset',
     dataset=dict(
         type='YOLOv5CocoDataset',
-		metainfo=dict(classes=your_classes),
+	metainfo=dict(classes=your_classes),
         data_root='/kaggle/input/dl-final2/train',
         ann_file='_annotations.coco.json',
         data_prefix=dict(img=''),
@@ -127,7 +127,7 @@ coco_val_dataset = dict(
     type='MultiModalDataset',
     dataset=dict(
         type='YOLOv5CocoDataset',
-		metainfo=dict(classes=your_classes),
+	metainfo=dict(classes=your_classes),
         data_root='/kaggle/input/dl-final2/valid',
         ann_file='_annotations.coco.json',
         data_prefix=dict(img=''),
@@ -135,19 +135,7 @@ coco_val_dataset = dict(
     class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new2.json',
     pipeline=test_pipeline)
 val_dataloader = dict(dataset=coco_val_dataset)
-coco_test_dataset = dict(
-    _delete_=True,
-    type='MultiModalDataset',
-    dataset=dict(
-        type='YOLOv5CocoDataset',
-		metainfo=dict(classes=your_classes),
-        data_root='/kaggle/input/dl-final2/test',
-        ann_file='_annotations.coco.json',
-        data_prefix=dict(img=''),
-        filter_cfg=dict(filter_empty_gt=False, min_size=32)),
-    class_text_path='/kaggle/working/DL_Final_Project/data/texts/my_class_new2.json',
-    pipeline=test_pipeline)
-test_dataloader = dict(dataset=coco_test_dataset)
+test_dataloader = val_dataloader
 # training settings
 default_hooks = dict(
     param_scheduler=dict(
